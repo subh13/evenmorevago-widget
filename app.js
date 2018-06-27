@@ -10964,10 +10964,13 @@
  */
 var vm = new Vue({
     data: {
-        title: '',
+        title: 'Initializing...',
         random_div_id: 0,
         my_api_url: '',
-        js_id: ''
+        js_id: '',
+        my_reviews: '',
+        arrIndex: 0,
+        someInteger: 0
     },
     computed : {
         /**
@@ -10976,7 +10979,7 @@ var vm = new Vue({
          */
         myDivId: function () {
             this.random_div_id = Math.floor(Math.random()*90000) + 10000;
-            return this.random_div_id;
+            return 'div'+this.random_div_id;
         },
         /**
          * this function defines api endpoint dynamically
@@ -10985,7 +10988,7 @@ var vm = new Vue({
             if (window.location.host == "localhost" || window.location.host == "127.0.0.1") {
                 this.my_api_url = "http://127.0.0.1:8000/api/v1/";
             } else {
-                this.my_api_url = "http://34.239.247.213/api/v1/";
+                this.my_api_url = "http://evenmorevago.com/api/v1/";
             }
             return this.my_api_url;
         },
@@ -11004,10 +11007,11 @@ var vm = new Vue({
         createDomElement: function () {
             var div             = document.createElement("div");
             div.id              = this.myDivId;
-            div.innerHTML       = this.title;
             document.body.appendChild(div);
             /* getting campaign details for further process*/
             this.getCampaignDetails();
+            /* adding custom component for popups */
+            div.innerHTML       = '<my-popups :reviews="my_reviews"></my-popups>';
         },
         /**
          * this function get the campaign details from api call
@@ -11031,16 +11035,69 @@ var vm = new Vue({
          * @param domain_response
          */
         checkDomainName: function (domain_response) {
-            console.log(domain_response.domain_name);
             if (window.location.origin == domain_response.domain_name || window.location.origin+'/' == domain_response.domain_name) {
-                console.info('matched');
+                this.formPopUps(domain_response.sticky_reviews);
             } else {
-                console.info('did not match');
+                console.error('Campaign URL did not match with current URL');
+            }
+        },
+        /**
+         * this function write the variable with sticky review data to pass on component and do setInterval inside component
+         * @param sticky_reviews
+         */
+        formPopUps: function (sticky_reviews) {
+            if (sticky_reviews.length > 0) {
+                this.my_reviews = sticky_reviews;
+                console.log(this.my_reviews);
+                // var targetDiv = document.getElementById(this.myDivId);
+                // console.log(targetDiv);
+                // var vmm = this;
+                // setInterval(function () {
+                //     console.log(vmm.my_reviews[vmm.arrIndex++].sticky_review_name);
+                //     if (vmm.arrIndex === sticky_reviews.length) {
+                //         vmm.arrIndex = 0;
+                //     }
+                // },1000);
+            } else {
+                console.warn('Please assign sticky reviews with your campaign in Evenmorevago dashboard');
             }
         }
     }
 });
-/**
- * call to create DOM element
- */
+/* rendering DOM element */
 vm.createDomElement();
+
+/* component for pop ups */
+Vue.component('my-popups',{
+    props: ['reviews'],
+    template: '<div id="sticky-reviews-rectangular-two" style="animation-name: fade-out-to-bottom;">\n' +
+    '\t\t<div class="sticky-reviews-left">\n' +
+    '\t\t\t<img src="https://morevago-images.s3-accelerate.amazonaws.com/morevago_thumb/images/proof/5a5582c6d7aa4990591435.jpg" alt="">\n' +
+    '\t\t</div>\n' +
+    '\t\t<div class="sticky-reviews-right">\n' +
+    '\t\t\t<span id="close-morevago-proofs" class="close">X</span>\n' +
+    '\t\t\t<h3>Sam Oldham</h3>\n' +
+    '\t\t\t<h4>Crazy how easy Morevago is to implement!</h4>\n' +
+    '\t\t\t<h5>\n' +
+    '\t\t\t\t<img draggable="false" class="emoji" alt="⭐" src="https://s.w.org/images/core/emoji/2.4/svg/2b50.svg">\n' +
+    '\t\t\t\t<img draggable="false" class="emoji" alt="⭐" src="https://s.w.org/images/core/emoji/2.4/svg/2b50.svg">\n' +
+    '\t\t\t\t<img draggable="false" class="emoji" alt="⭐" src="https://s.w.org/images/core/emoji/2.4/svg/2b50.svg">\n' +
+    '\t\t\t\t<img draggable="false" class="emoji" alt="⭐" src="https://s.w.org/images/core/emoji/2.4/svg/2b50.svg">\n' +
+    '\t\t\t\t<img draggable="false" class="emoji" alt="⭐" src="https://s.w.org/images/core/emoji/2.4/svg/2b50.svg">\n' +
+    '\t\t\t</h5>\n' +
+    '\t\t</div>\n' +
+    '\t</div>',
+    mounted : function(){
+
+        this.todo()
+    },
+    methods : {
+
+        todo : function(){
+            console.log('Brasil');
+        }
+    },
+});
+
+/* mounting with the div id */
+vm.$mount('#'+vm.myDivId);
