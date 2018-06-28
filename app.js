@@ -10990,7 +10990,7 @@ var vm = new Vue({
             if (window.location.host == "localhost" || window.location.host == "127.0.0.1") {
                 this.my_api_url = "http://127.0.0.1:8000/api/v1/";
             } else {
-                this.my_api_url = "http://evenmorevago.com/api/v1/";
+                this.my_api_url = "http://34.239.247.213/api/v1/";
             }
             return this.my_api_url;
         },
@@ -11010,7 +11010,7 @@ var vm = new Vue({
             if (window.location.host == "localhost" || window.location.host == "127.0.0.1") {
                 this.my_resource_url = "http://127.0.0.1:8000";
             } else {
-                this.my_resource_url = "http://evenmorevago.com";
+                this.my_resource_url = "http://34.239.247.213";
             }
             return this.my_resource_url;
         },
@@ -11076,7 +11076,7 @@ var vm = new Vue({
                 var vmm = this;
                 setInterval(function () {
                     vmm.myIndex = vmm.arrIndex++;
-                    targetDiv.innerHTML = '<div id="sticky-reviews-rectangular-two" class="animated ">' +
+                    targetDiv.innerHTML = '<div id="sticky-reviews-rectangular-two" class="animated">' +
                         '<div class="sticky-reviews-left">' +
                         '<img src="'+vmm.myResourceUrl+'/uploads/'+vmm.my_reviews[vmm.myIndex].image+'" alt="sticky_review_image">' +
                         '</div>' +
@@ -11104,8 +11104,11 @@ var vm = new Vue({
         }
     },
     watch: {
+        /**
+         * watching myIndex variables change on each index change and adding animation
+         */
         myIndex: function () {
-            console.log('change');
+            this.$el.childNodes[0].classList.toggle('fadeInUp')
         }
     }
 });
