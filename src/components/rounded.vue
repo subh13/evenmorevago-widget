@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="main-cont">
+  <div id="app" class="main-cont" v-if="data[counter]">
     <div id="ajRy2fZIho1o2fZIsuS9_0">
       <div class="ajRy3zjZho1o3zjZsuS9_0 ajRy2riIho1o2riIsuS9_0">
         <div class="ajRy1JYFho1o1JYFsuS9_0">
@@ -27,7 +27,7 @@
         props: {
           data: {
             type: Array,
-            default: []
+            default: () => []
           },
           counter: {
             type: Number,
@@ -37,21 +37,18 @@
             type: String,
             default: ''
           },
-          isBranded: {
-            type: Boolean,
-            default: false
-          },
-          brandingData: {
-            type: Object,
-            default: []
-          }
+          isBranded: {},
+          brandingData: {}
         },
         name: "rounded",
         data: function () {
           return {
             componentName: 'Im rounded component'
           };
-        }
+        },
+      created () {
+          console.log(this.data);
+      }
     }
 </script>
 

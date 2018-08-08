@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" v-if="typeof squaredPopUpData === 'object' || typeof roundedPopUpData === 'object'">
     <app-squared v-if="selectedComponent === 'appSquared'"
                  :data="squaredPopUpData"
                  :counter="myCounter"
@@ -16,13 +16,13 @@
 </template>
 
 <script>
-  /**
-   * NOTE: written and maintained in ECMA6 version. Make sure you use the same version when you try to code even more touch.
-   * author Tier5 LLC (Jonathan Vaughn)
-   */
-  import squared from './components/squared.vue';
-  import rounded from './components/rounded.vue';
-  import axios from 'axios';
+/**
+ * NOTE: written and maintained in ECMA6 version. Make sure you use the same version when you try to code even more touch.
+ * author Tier5 LLC (Jonathan Vaughn)
+ */
+import squared from './components/squared.vue';
+import rounded from './components/rounded.vue';
+import axios from 'axios';
 export default {
   name: 'app',
   data () {
@@ -94,7 +94,7 @@ export default {
     checkDomainName(dataresponse) {
       //this.formPopUps(dataresponse);
       if (window.location.origin == dataresponse.domain_name || window.location.origin+'/' == dataresponse.domain_name) {
-        this.formPopUps(dataresponse.sticky_reviews);
+        this.formPopUps(dataresponse);
       } else {
         console.error('Campaign URL did not match with current URL');
       }
@@ -124,13 +124,13 @@ export default {
      */
     createPopUps(wholeresponse, type) {
       if (wholeresponse) {
-        if (type) {
-          this.squaredPopUpData = wholeresponse.sticky_reviews;
-        } else {
-          this.roundedPopUpData = wholeresponse.sticky_reviews;
-        }
         if (wholeresponse.sticky_reviews !== null) {
           if (wholeresponse.sticky_reviews.length > 0) {
+            if (type) {
+              this.squaredPopUpData = wholeresponse.sticky_reviews;
+            } else {
+              this.roundedPopUpData = wholeresponse.sticky_reviews;
+            }
             // check branding is there or not
             this.isBranded = wholeresponse.branding ===  1 ? true: false;
             this.brandingData = wholeresponse.branding_details;
@@ -143,12 +143,12 @@ export default {
               } else {
                 vm.myCounter++;
               }
-            },1000);
+            },wholeresponse.delay);
           } else {
-            console.info('[evenmorevago warn::]- ' + 'Empty set of sticky reviews');
+            console.warn('[evenmorevago warn::]- ' + 'Empty set of sticky reviews');
           }
         } else {
-          console.info('[evenmorevago warn::]- ' + 'Empty set of sticky reviews');
+          console.warn('[evenmorevago warn::]- ' + 'Empty set of sticky reviews');
         }
       } else {
         console.error('[evenmorevago error::]- ' + 'Empty response!');
