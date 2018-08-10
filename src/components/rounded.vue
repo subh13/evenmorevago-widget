@@ -45,10 +45,7 @@
           return {
             componentName: 'Im rounded component'
           };
-        },
-      created () {
-          console.log(this.data);
-      }
+        }
     }
 </script>
 
